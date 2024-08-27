@@ -18,4 +18,4 @@ export class Analyst {
   createdAt: Date;
 }
 
-export const AnalystSchema = SchemaFactory.createForClass(Analyst);
+export const AnalystSchema = SchemaFactory.createForClass(Analyst); // Correct export

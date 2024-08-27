@@ -11,11 +11,11 @@ async function bootstrap() {
   
   // Retrieve MongoDB URI and the port number
   const mongodbUri = configService.get<string>('MONGODB_URI');
-  const port = configService.get<number>('PORT') || 3000;
+  const port = configService.get<number>('PORT') || 3001;
 
   // Log the MongoDB connection information
   Logger.log(`Connected to MongoDB at ${mongodbUri}`, 'Bootstrap');
-
+  app.enableCors();  // Enable CORS for all origins
   // Start the NestJS application
   await app.listen(port);
 

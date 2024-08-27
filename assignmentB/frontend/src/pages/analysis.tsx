@@ -1,29 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ArticleCard from '../components/ArticleCard';
+import { Article } from '../types'; // Import the Article type
 
 const Analysis: React.FC = () => {
-  const [articles, setArticles] = useState([]);
+  const [articles, setArticles] = useState<Article[]>([]);
 
   useEffect(() => {
     const fetchArticles = async () => {
-      const response = await axios.get('/api/articles/analysis');
-      setArticles(response.data);
+      try {
+        const response = await axios.get<Article[]>('/analysts/analysis');
+        setArticles(response.data);
+      } catch (error) {
+        console.error('Error fetching articles:', error);
+      }
     };
     fetchArticles();
   }, []);
-
-  const handleAnalyze = async (articleId: string, findings: string) => {
-    await axios.post(`/api/articles/analyze/${articleId}`, { findings });
-    setArticles(articles.filter(article => article.id !== articleId));
-  };
 
   return (
     <div>
       {articles.map((article, index) => (
         <ArticleCard key={index} article={article}>
           <textarea placeholder="Add findings..." />
-          <button onClick={() => handleAnalyze(article.id, 'Some findings')}>Save Findings</button>
+          <button onClick={() => console.log(`Article ${article.id} findings saved`)}>Save Findings</button>
         </ArticleCard>
       ))}
     </div>

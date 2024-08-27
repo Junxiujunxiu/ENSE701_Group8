@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ArticleCard from '../components/ArticleCard';
+import { Article } from '../types'; // Import the Article type
 
 const Moderation: React.FC = () => {
-  const [articles, setArticles] = useState([]);
+  const [articles, setArticles] = useState<Article[]>([]); // Use Article type for state
 
   useEffect(() => {
     const fetchArticles = async () => {
-      const response = await axios.get('/api/articles/moderation');
+      const response = await axios.get<Article[]>('/analysts/moderation'); // Type the response as an array of Article objects
       setArticles(response.data);
     };
     fetchArticles();
   }, []);
 
   const handleModerate = async (articleId: string, action: string) => {
-    await axios.post(`/api/articles/moderate/${articleId}`, { action });
+    await axios.post(`/analysts/moderate/${articleId}`, { action });
     setArticles(articles.filter(article => article.id !== articleId));
   };
 
