@@ -1,20 +1,25 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Module, Logger } from '@nestjs/common';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { getMongoConfig } from './common/config/mongodb.config';
-import configuration from './common/config/configuration';
+import { ArticleModule } from './api/articles/article.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
+    ConfigModule.forRoot(),
+    ArticleModule, //added article module.
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        const dbUri = configService.get<string>('DB_URI');
+        Logger.log(`Connecting to database at ${dbUri}`, 'MongooseModule');
+        return { uri: dbUri };
+      },
       inject: [ConfigService],
-      useFactory: getMongoConfig,
     }),
-    // Other modules...
   ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

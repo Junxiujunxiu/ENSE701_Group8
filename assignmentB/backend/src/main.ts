@@ -1,25 +1,27 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import * as mongoose from 'mongoose';
+import * as dotenv from 'dotenv';
+
+// Load environment variables from .env file
+dotenv.config();
 
 async function bootstrap() {
+  const dbUri = process.env.DB_URI;
+  Logger.log(`DB_URI: ${dbUri}`, 'Bootstrap');
+
+  try {
+    await mongoose.connect(dbUri, { serverSelectionTimeoutMS: 5000 });
+    Logger.log('Database connected successfully');
+  } catch (err) {
+    Logger.error('Database connection error:', err.message);
+  }
+
   const app = await NestFactory.create(AppModule);
-  
-  // Get ConfigService to access environment variables
-  const configService = app.get(ConfigService);
-  
-  // Retrieve MongoDB URI and the port number
-  const mongodbUri = configService.get<string>('MONGODB_URI');
-  const port = configService.get<number>('PORT') || 3001;
-
-  // Log the MongoDB connection information
-  Logger.log(`Connected to MongoDB at ${mongodbUri}`, 'Bootstrap');
-  app.enableCors();  // Enable CORS for all origins
-  // Start the NestJS application
-  await app.listen(port);
-
-  // Log the application startup information
-  Logger.log(`Application is running on: http://localhost:${port}`, 'Bootstrap');
+  // enable cors
+ app.enableCors({ origin: true, credentials: true });
+  const port = process.env.PORT || 8082;
+  await app.listen(port, () => Logger.log(`Server running on port ${port}`));
 }
 bootstrap();
