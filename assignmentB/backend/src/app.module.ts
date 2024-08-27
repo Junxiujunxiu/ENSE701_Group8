@@ -1,11 +1,21 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ArticlesModule } from './articles/articles.module';
+import { getMongoConfig } from './common/config/mongodb.config';
+import configuration from './common/config/configuration';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost/nest'), // Replace with your actual MongoDB connection string
-    ArticlesModule,
+    ConfigModule.forRoot({
+      load: [configuration],
+      isGlobal: true,
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: getMongoConfig,
+    }),
+    // Other modules here...
   ],
 })
 export class AppModule {}
