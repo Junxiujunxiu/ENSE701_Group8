@@ -7,7 +7,6 @@ import configuration from './common/config/configuration';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [configuration],
       isGlobal: true,
     }),
     MongooseModule.forRootAsync({
@@ -15,7 +14,7 @@ import configuration from './common/config/configuration';
       inject: [ConfigService],
       useFactory: getMongoConfig,
     }),
-    // Other modules here...
+    // Other modules...
   ],
 })
 export class AppModule {}
