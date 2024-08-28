@@ -1,8 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
+//type alias, creating a new name for an existing type.
+//so AticleDocument ==== HydratedDocument<Article>. Article refers to the article class
 export type ArticleDocument = HydratedDocument<Article>;
 
+//defines the structure of documents stored in database collection.
 @Schema()
 export class Article {
   @Prop({ required: true })
@@ -27,4 +30,5 @@ export class Article {
   evidence: string;
 }
 
+//
 export const ArticleSchema = SchemaFactory.createForClass(Article);
