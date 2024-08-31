@@ -1,41 +1,144 @@
-import { Injectable } from '@nestjs/common';//This decorator marks the calss as a provider that can be injected into other classes.
-import { InjectModel } from '@nestjs/mongoose'; //decorator from mongoose that inject the mongoose model into the service
-import { Model } from 'mongoose'; //model interface from mongoose that provides methods for databse
-import { Article, ArticleDocument } from './article.schema'; // from article.schema, article is the class name and the document is the alias type
-import { CreateArticleDto } from './create-article.dto'; // data transfer object that defines the shae of data to create article
+import { Injectable } from '@nestjs/common';
+/****************************************
+ * `@Injectable()`: 
+ * - This decorator marks the class as a provider that can be injected into other classes.
+ * - Makes the class usable in other components and allows for dependency injection.
+ ****************************************/
 
-//makes the class usable in other components
+import { InjectModel } from '@nestjs/mongoose'; 
+/****************************************
+ * `@InjectModel()`:
+ * - A decorator from Mongoose that injects the Mongoose model into the service.
+ * - Allows the service to interact with a specific MongoDB collection defined by the model.
+ ****************************************/
+
+import { Model } from 'mongoose'; 
+/****************************************
+ * `Model`:
+ * - Interface from Mongoose that provides methods to interact with the MongoDB database.
+ * - Represents the structure and behavior of a MongoDB collection in your application.
+ ****************************************/
+
+import { Article, ArticleDocument } from './article.schema';
+/****************************************
+ * `Article` and `ArticleDocument`:
+ * - `Article`: The class name from `article.schema`, representing the schema of the articles collection.
+ * - `ArticleDocument`: A type alias for `HydratedDocument<Article>`, representing the document type for the article schema.
+ ****************************************/
+
+import { CreateArticleDto } from './create-article.dto'; 
+/****************************************
+ * `CreateArticleDto`: 
+ * - A Data Transfer Object (DTO) that defines the shape of data required to create an article.
+ * - Used for validating and transferring data within the application.
+ ****************************************/
+
 @Injectable()
 export class ArticleService {
-  //constructor for the class that injects the mongoose model for the article schema
-  //@InjectModel(Article.name) : allowing the servic to interact with the mongoDB collection, specified by aricle name.
-  //private articleModel: Model<ArticleDocument>: variable articleModel with class type Model (Mongoose class representing the collection)
-  //<ArticleDocument>: type of document that this model handles
-  //overall, this property stores mongoose model instance that handle document shaped like "ArticleDocument."
-  //I can use this variable within the class to interact with the articles collection.
+  /****************************************
+   * Constructor:
+   * - Injects the Mongoose model for the `Article` schema into the service.
+   * 
+   * `@InjectModel(Article.name)`:
+   * - Allows the service to interact with the MongoDB collection specified by the article schema.
+   * - Injects the model associated with the `Article` schema.
+   * 
+   * `private articleModel: Model<ArticleDocument>`:
+   * - Declares a private property `articleModel` of type `Model<ArticleDocument>`.
+   * - This property holds the Mongoose model instance that handles documents shaped like `ArticleDocument`.
+   * - Allows interaction with the articles collection in MongoDB through the `articleModel` variable.
+   ****************************************/
   constructor(@InjectModel(Article.name) private articleModel: Model<ArticleDocument>) {}
 
-  //asynchronous method that creates a new article in the databse
-  //taskes a 'CreateArticleDto' object as input and returns a promise.
-  //creates instance of article model using the data from 'createArticleDto'
-  //save the article to the databased and returns the saved document.
+  /****************************************
+   * `create()` Method:
+   * - An asynchronous method that creates a new article in the database.
+   * 
+   * `createArticleDto: CreateArticleDto`:
+   * - Takes a `CreateArticleDto` object as input, which contains the data to create the article.
+   * 
+   * Returns:
+   * - A Promise that resolves to the saved `Article` document.
+   * 
+   * Steps:
+   * 1. Creates an instance of the article model using the data from `createArticleDto`.
+   * 2. Saves the article to the database.
+   * 3. Returns the saved document.
+   ****************************************/
   async create(createArticleDto: CreateArticleDto): Promise<Article> {
     const createdArticle = new this.articleModel(createArticleDto);
     return createdArticle.save();
   }
 
+  /****************************************
+   * `findAll()` Method:
+   * - An asynchronous method that retrieves all articles from the database.
+   * 
+   * Returns:
+   * - A Promise that resolves to an array of `Article` documents.
+   * 
+   * Steps:
+   * 1. Uses the `find()` method of the `articleModel` to get all articles.
+   * 2. Executes the query with `.exec()` and returns the results.
+   ****************************************/
   async findAll(): Promise<Article[]> {
     return this.articleModel.find().exec();
   }
 
+  /****************************************
+   * `findOne()` Method:
+   * - An asynchronous method that retrieves a single article by its ID from the database.
+   * 
+   * `id: string`:
+   * - The ID of the article to find.
+   * 
+   * Returns:
+   * - A Promise that resolves to the found `Article` document, or `null` if not found.
+   * 
+   * Steps:
+   * 1. Uses the `findById()` method of the `articleModel` to find an article by its ID.
+   * 2. Executes the query with `.exec()` and returns the result.
+   ****************************************/
   async findOne(id: string): Promise<Article> {
     return this.articleModel.findById(id).exec();
   }
 
+  /****************************************
+   * `update()` Method:
+   * - An asynchronous method that updates an existing article in the database.
+   * 
+   * `id: string`:
+   * - The ID of the article to update.
+   * 
+   * `createArticleDto: CreateArticleDto`:
+   * - Contains the updated data for the article.
+   * 
+   * Returns:
+   * - A Promise that resolves to the updated `Article` document.
+   * 
+   * Steps:
+   * 1. Uses the `findByIdAndUpdate()` method of the `articleModel` to update the article by its ID.
+   * 2. Passes the updated data (`createArticleDto`) and the `{ new: true }` option to return the updated document.
+   * 3. Executes the query with `.exec()` and returns the result.
+   ****************************************/
   async update(id: string, createArticleDto: CreateArticleDto): Promise<Article> {
     return this.articleModel.findByIdAndUpdate(id, createArticleDto, { new: true }).exec();
   }
 
+  /****************************************
+   * `delete()` Method:
+   * - An asynchronous method that deletes an article from the database.
+   * 
+   * `id: string`:
+   * - The ID of the article to delete.
+   * 
+   * Returns:
+   * - A Promise that resolves to the deleted `Article` document, or `null` if not found.
+   * 
+   * Steps:
+   * 1. Uses the `findByIdAndDelete()` method of the `articleModel` to delete the article by its ID.
+   * 2. Executes the query with `.exec()` and returns the result.
+   ****************************************/
   async delete(id: string): Promise<Article> {
     return this.articleModel.findByIdAndDelete(id).exec();
   }

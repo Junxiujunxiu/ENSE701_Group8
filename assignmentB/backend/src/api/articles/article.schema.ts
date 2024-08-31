@@ -1,13 +1,34 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
-//type alias, creating a new name for an existing type.
-//so AticleDocument ==== HydratedDocument<Article>. Article refers to the article class
-export type ArticleDocument = HydratedDocument<Article>;
+/****************************************
+ * Type alias: Creating a new name for an existing type.
+ * - `ArticleDocument` is equivalent to `HydratedDocument<Article>`.
+ * - `Article` refers to the Article class.
+ *
+ * Document: An instance of a model that represents a single record in a MongoDB collection.
+ * - Each individual article in a collection of articles is a document.
+ *
+ * Hydration: The process of taking raw data (a plain JavaScript object from the database)
+ * and turning it into a Mongoose document by adding all the methods and properties defined in
+ * the Mongoose schema to this object.
+ * - After hydration, the document can call methods like `.save()`, `.remove()`, etc.
+ * - This type definition (`ArticleDocument`) ensures that any variable of this type will have all the
+ *   properties and methods of a hydrated Article document.
+ ****************************************/
+export type ArticleDocument = HydratedDocument<Article>; 
 
-//defines the structure of documents stored in database collection.
+/****************************************
+ * `@Schema()`: Decorator that marks the class as a schema definition for Mongoose.
+ * - It tells Mongoose that this class will be used to define the structure of documents in a MongoDB collection.
+ ****************************************/
 @Schema()
 export class Article {
+  /****************************************
+   * `@Prop({ required: true })`: 
+   * - This decorator defines a property in the Mongoose schema and indicates that this field is required.
+   * - If this field is missing when creating a document, Mongoose will throw an error.
+   ****************************************/
   @Prop({ required: true })
   title: string;
 
@@ -30,5 +51,20 @@ export class Article {
   evidence: string;
 }
 
-//
+/****************************************
+ * `SchemaFactory`: A utility provided by Mongoose to convert a TypeScript class into a Mongoose schema.
+ * - It automates the creation of a schema based on the decorators and types defined in the class.
+ *
+ * `createForClass(Article)`: 
+ * - This method takes the `Article` class as an argument and generates a Mongoose schema from it.
+ *
+ * `ArticleSchema`: 
+ * - This constant holds the Mongoose schema that was generated from the `Article` class.
+ *
+ * You can later use `ArticleSchema` to create a Mongoose model, which allows you to perform operations
+ * like creating, reading, updating, and deleting documents in the MongoDB collection that corresponds to the Article schema.
+ *
+ * Example usage:
+ * const ArticleModel = mongoose.model('Article', ArticleSchema);
+ ****************************************/
 export const ArticleSchema = SchemaFactory.createForClass(Article);
