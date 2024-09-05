@@ -66,8 +66,13 @@ export class ArticleService {
    * 3. Returns the saved document.
    ****************************************/
   async create(createArticleDto: CreateArticleDto): Promise<Article> {
-    const createdArticle = new this.articleModel(createArticleDto);
-    return createdArticle.save();
+    try {
+      const createdArticle = new this.articleModel(createArticleDto);
+      return await createdArticle.save();  // Use await to wait for the save operation to complete
+    } catch (error) {
+      console.error('Error creating article:', error);
+      throw new Error('Error creating article');
+    }
   }
 
   /****************************************
@@ -82,7 +87,12 @@ export class ArticleService {
    * 2. Executes the query with `.exec()` and returns the results.
    ****************************************/
   async findAll(): Promise<Article[]> {
-    return this.articleModel.find().exec();
+    try {
+      return await this.articleModel.find().exec();  // Use await to wait for the find operation to complete
+    } catch (error) {
+      console.error('Error fetching articles:', error);
+      throw new Error('Error fetching articles');
+    }
   }
 
   /****************************************
@@ -99,8 +109,17 @@ export class ArticleService {
    * 1. Uses the `findById()` method of the `articleModel` to find an article by its ID.
    * 2. Executes the query with `.exec()` and returns the result.
    ****************************************/
-  async findOne(id: string): Promise<Article> {
-    return this.articleModel.findById(id).exec();
+  async findOne(id: string): Promise<Article | null> {
+    try {
+      const article = await this.articleModel.findById(id).exec();  // Use await to wait for the findById operation
+      if (!article) {
+        console.warn(`Article with ID ${id} not found`);
+      }
+      return article;
+    } catch (error) {
+      console.error(`Error fetching article with ID ${id}:`, error);
+      throw new Error(`Error fetching article with ID ${id}`);
+    }
   }
 
   /****************************************
@@ -121,9 +140,23 @@ export class ArticleService {
    * 2. Passes the updated data (`createArticleDto`) and the `{ new: true }` option to return the updated document.
    * 3. Executes the query with `.exec()` and returns the result.
    ****************************************/
-  async update(id: string, createArticleDto: CreateArticleDto): Promise<Article> {
-    return this.articleModel.findByIdAndUpdate(id, createArticleDto, { new: true }).exec();
+  async update(id: string, createArticleDto: CreateArticleDto): Promise<Article | null> {
+    try {
+      const updatedArticle = await this.articleModel.findByIdAndUpdate(id, createArticleDto, { new: true }).exec();
+      
+      if (!updatedArticle) {
+        console.warn(`Article with ID ${id} not found`);
+        return null;  // Return null if no article is found with the given ID
+      }
+  
+      return updatedArticle;  // Return the updated article if found and updated
+    } catch (error) {
+      console.error(`Error updating article with ID ${id}:`, error);
+      throw new Error(`Error updating article with ID ${id}`);  // Throw a new error with a custom message
+    }
   }
+  
+  
 
   /****************************************
    * `delete()` Method:
@@ -139,7 +172,19 @@ export class ArticleService {
    * 1. Uses the `findByIdAndDelete()` method of the `articleModel` to delete the article by its ID.
    * 2. Executes the query with `.exec()` and returns the result.
    ****************************************/
-  async delete(id: string): Promise<Article> {
-    return this.articleModel.findByIdAndDelete(id).exec();
+  async delete(id: string): Promise<Article | null> {
+    try {
+      const deletedArticle = await this.articleModel.findByIdAndDelete(id).exec();
+      
+      if (!deletedArticle) {
+        console.warn(`Article with ID ${id} not found`);
+        return null;  // Return null if no article is found with the given ID
+      }
+  
+      return deletedArticle;  // Return the deleted article if it was found and deleted
+    } catch (error) {
+      console.error(`Error deleting article with ID ${id}:`, error);
+      throw new Error(`Error deleting article with ID ${id}`);  // Throw a new error with a custom message
+    }
   }
-}
+}  
