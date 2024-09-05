@@ -4,6 +4,8 @@ import { ArticleService } from './article.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Article, ArticleSchema } from './article.schema';
 
+//it is like a budle that contains all the related components.
+
 /****************************************
  * `@Module()`:
  * - The `@Module()` decorator defines a NestJS module.
