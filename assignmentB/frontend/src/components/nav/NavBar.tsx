@@ -59,3 +59,6 @@ const NavBar: React.FC<Props> = ({ children }: Props) => {
  * imported and used in other components or pages.
  *********************************************/
 export default NavBar;
+
+
+//React.FC---if i explicitily use this, i don't need to initialize children in the prop type and the type script will automatiically include it in the component, but if i dont use React.FC, i need to explicitly initialize children in the prop if i need it.
