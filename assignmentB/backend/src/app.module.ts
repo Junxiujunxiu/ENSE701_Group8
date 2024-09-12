@@ -2,8 +2,14 @@ import { Module, Logger } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ArticleModule } from './api/articles/article.module';
+import { ArticleModule } from './api/articles/article.module';  // Already added
 import { ConfigModule, ConfigService } from '@nestjs/config';
+
+// Import the new modules
+import { ModerationModule } from './api/moderation/moderation.module';
+import { AnalysisModule } from './api/analysis/analysis.module';
+import { SearchModule } from './api/search/search.module';
+import { AdminModule } from './api/admin/admin.module';
 
 /****************************************
  * `@Module()`:
@@ -33,6 +39,34 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
      * - It allows the `AppModule` to expose the article-related routes, controllers, and services.
      ****************************************/
     ArticleModule,
+
+    /****************************************
+     * `ModerationModule`:
+     * - This module encapsulates all the logic related to article moderation.
+     * - It includes routes, controllers, services, and schema specific to moderation.
+     ****************************************/
+    ModerationModule,
+
+    /****************************************
+     * `AnalysisModule`:
+     * - This module encapsulates all the logic related to article analysis.
+     * - It includes routes, controllers, services, and schema specific to analysis.
+     ****************************************/
+    AnalysisModule,
+
+    /****************************************
+     * `SearchModule`:
+     * - This module encapsulates all the logic related to searching articles.
+     * - It includes routes, controllers, services, and schema specific to search functionality.
+     ****************************************/
+    SearchModule,
+
+    /****************************************
+     * `AdminModule`:
+     * - This module encapsulates all the logic related to admin operations (update, delete).
+     * - It includes routes, controllers, services, and schema specific to admin actions.
+     ****************************************/
+    AdminModule,
 
     /****************************************
      * `MongooseModule.forRootAsync()`:
@@ -86,6 +120,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
    ****************************************/
   providers: [AppService],
 })
+
 /****************************************
  * `export class AppModule`:
  * - The `AppModule` is the root module of the NestJS application.

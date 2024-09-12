@@ -49,6 +49,10 @@ export class Article {
 
   @Prop({ required: true })
   evidence: string;
+
+  //-------------------added for new functinality------------------
+  @Prop({ default: 'submitted' })  // Status can be 'submitted', 'moderated', 'rejected', 'analyzed'
+  status: string;
 }
 
 /****************************************

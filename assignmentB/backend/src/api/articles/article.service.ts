@@ -67,13 +67,17 @@ export class ArticleService {
    ****************************************/
   async create(createArticleDto: CreateArticleDto): Promise<Article> {
     try {
-      const createdArticle = new this.articleModel(createArticleDto);
-      return await createdArticle.save();  // Use await to wait for the save operation to complete
+      const createdArticle = new this.articleModel({
+        ...createArticleDto,
+        status: 'submitted',  // Ensure articles start with the 'submitted' status
+      });
+      return await createdArticle.save();
     } catch (error) {
       console.error('Error creating article:', error);
       throw new Error('Error creating article');
     }
   }
+  
 
   /****************************************
    * `findAll()` Method:
@@ -88,12 +92,14 @@ export class ArticleService {
    ****************************************/
   async findAll(): Promise<Article[]> {
     try {
-      return await this.articleModel.find().exec();  // Use await to wait for the find operation to complete
+      // Fetch only articles with status 'moderated' or 'analyzed'
+      return await this.articleModel.find({ status: { $in: ['moderated', 'analyzed'] } }).exec();
     } catch (error) {
       console.error('Error fetching articles:', error);
       throw new Error('Error fetching articles');
     }
   }
+  
 
   /****************************************
    * `findOne()` Method:
