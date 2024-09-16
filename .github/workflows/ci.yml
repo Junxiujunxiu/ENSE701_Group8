@@ -1,22 +1,9 @@
-name: CI/CD Pipeline
-
-on:
-  push:
-    branches: 
-      - main
-      - development
-  pull_request:
-    branches:
-      - main
-      - development
-
 jobs:
   backend:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x]  # Node.js version variable
-    name: Backend CI
+        node-version: [16.x]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -28,25 +15,19 @@ jobs:
 
       - name: Install dependencies for backend
         run: |
-          cd backend
+          cd assignmentB/backend
           npm install
 
       - name: Run backend tests
         run: |
-          cd backend
+          cd assignmentB/backend
           npm test
-
-      # - name: Build backend (if needed)
-      #   run: |
-      #     cd backend
-      #     npm run build
 
   frontend:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x]  # Node.js version variable
-    name: Frontend CI
+        node-version: [16.x]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -58,15 +39,10 @@ jobs:
 
       - name: Install dependencies for frontend
         run: |
-          cd frontend
+          cd assignmentB/frontend
           npm install
 
       - name: Run frontend tests
         run: |
-          cd frontend
+          cd assignmentB/frontend
           npm test
-
-      # - name: Build frontend
-      #   run: |
-      #     cd frontend
-      #     npm run build
