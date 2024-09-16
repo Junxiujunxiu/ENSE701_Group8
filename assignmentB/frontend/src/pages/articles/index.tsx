@@ -1,12 +1,16 @@
+// src/pages/articles/index.tsx
+
 import { GetServerSideProps, NextPage } from 'next';
 import axios from 'axios';
-import SortableTable from '../../components/table/SortableTable';
-import { Article } from '../../components/Article';
+import SortableTable from '../../components/table/SortableTable';  // Adjust the import path if needed
+import { Article } from '../../components/Article';  // Adjust the import path if needed
 
+// Define props type for articles
 type ArticlesProps = {
   articles: Article[];
 };
 
+// Define the Articles page component
 const Articles: NextPage<ArticlesProps> = ({ articles }) => {
   const headers: { key: keyof Article & string; label: string }[] = [
     { key: 'title', label: 'Title' },
@@ -16,6 +20,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
     { key: 'doi', label: 'DOI' },
     { key: 'claim', label: 'Claim' },
     { key: 'evidence', label: 'Evidence' },
+    { key: 'status', label: 'Status' },  // Optional, to view article status
   ];
 
   return (
@@ -27,11 +32,15 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
   );
 };
 
+
+// Server-side rendering method to fetch articles
 export const getServerSideProps: GetServerSideProps<ArticlesProps> = async () => {
   try {
-    const response = await axios.get('http://localhost:3001/api/articles');
+    const response = await axios.get('http://localhost:3001/api/articles');  // API call to fetch articles
+
+    // Map backend _id to id and include the status
     const articles = response.data.map((article: any) => ({
-      id: article._id,
+      id: article._id,  // Map _id to id for frontend consistency
       title: article.title || '',
       authors: article.authors || [],
       source: article.source || '',
@@ -39,6 +48,7 @@ export const getServerSideProps: GetServerSideProps<ArticlesProps> = async () =>
       doi: article.doi || '',
       claim: article.claim || '',
       evidence: article.evidence || '',
+      status: article.status || '',  // Add status field
     }));
 
     return {
@@ -55,5 +65,6 @@ export const getServerSideProps: GetServerSideProps<ArticlesProps> = async () =>
     };
   }
 };
+
 
 export default Articles;
