@@ -1,0 +1,60 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - development
+  pull_request:
+    branches:
+      - main
+      - development
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies for backend
+        run: |
+          cd assignmentB/backend
+          npm install
+
+      - name: Run backend tests
+        run: |
+          cd assignmentB/backend
+          npm test
+
+  frontend:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies for frontend
+        run: |
+          cd assignmentB/frontend
+          npm install
+ # Skip the test step, need to add test script to package.js later when i need to test the frontend.
+      # - name: Run frontend tests
+      #   run: |
+      #     cd assignmentB/frontend
+      #     npm test
