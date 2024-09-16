@@ -53,8 +53,8 @@ jobs:
         run: |
           cd assignmentB/frontend
           npm install
-
-      - name: Run frontend tests
-        run: |
-          cd assignmentB/frontend
-          npm test
+ # Skip the test step, need to add test script to package.js later when i need to test the frontend.
+      # - name: Run frontend tests
+      #   run: |
+      #     cd assignmentB/frontend
+      #     npm test
