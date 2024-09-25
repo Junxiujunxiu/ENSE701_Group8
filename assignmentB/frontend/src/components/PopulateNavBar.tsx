@@ -45,8 +45,8 @@ const PopulatedNavBar = () => {
         <NavDropdown>
           <NavItem route="/moderation">
             Moderation
-            {/* Display the red dot and count next to Moderation */}
-            <NotificationBadge count={pendingCount} />
+            {/* Notification badge displayed after the text */}
+            {pendingCount > 0 && <NotificationBadge count={pendingCount} />}
             </NavItem>
           <NavItem route="/analysis">Analysis</NavItem>
           <NavItem route="/admin">Admin Dashboard</NavItem>
