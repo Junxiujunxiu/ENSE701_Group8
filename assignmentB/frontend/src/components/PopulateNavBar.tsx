@@ -8,6 +8,7 @@ import axios from "axios";
 
 const PopulatedNavBar = () => {
   const [pendingCount, setPendingCount] = useState(0);
+  const [moderatedCount, setModeratedCount] = useState(0);
 
   useEffect(() => {
     // Fetch the number of pending moderation articles
@@ -22,14 +23,34 @@ const PopulatedNavBar = () => {
       }
     };
 
-    fetchPendingCount();
 
-    // Poll every 5 seconds
-    const intervalId = setInterval(fetchPendingCount, 3000);
+    const fetchModeratedCount = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/api/analysis');
+        console.log("Full API response 22222: ", response);
+        setModeratedCount(response.data.length);
+      } catch (err) {
+        console.log("Error fetching moderated count from the analysis api", err);
+      }
+    }
+
+    // Initial fetch
+    fetchPendingCount();
+    fetchModeratedCount();
+
+    // Poll every 3 seconds
+    const pendingIntervalId = setInterval(fetchPendingCount, 1000);
+    const moderatedIntervalId = setInterval(fetchModeratedCount, 1000);
 
     // Cleanup interval on component unmount
-    return () => clearInterval(intervalId);
+    return () => {
+      clearInterval(pendingIntervalId);
+      clearInterval(moderatedIntervalId);
+    };
+
   }, []);
+
+  
 
   return (
     <NavBar>
@@ -56,7 +77,11 @@ const PopulatedNavBar = () => {
             {/* Display the red dot and count next to Moderation */}
             <NotificationBadge count={pendingCount} />
             </NavItem>
-          <NavItem route="/analysis">Analysis</NavItem>
+          <NavItem route="/analysis">
+            Analysis
+            {/* Display the red dot and waiting for analysis count next to Analysis */}
+            <NotificationBadge count={moderatedCount} />
+            </NavItem>
           <NavItem route="/admin">Admin Dashboard</NavItem>
           <NavItem route="/search">Search</NavItem>
         </NavDropdown>
