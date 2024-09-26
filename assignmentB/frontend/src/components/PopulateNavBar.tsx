@@ -14,13 +14,21 @@ const PopulatedNavBar = () => {
     const fetchPendingCount = async () => {
       try {
         const response = await axios.get('http://localhost:3001/api/moderation/pending-count');
-        setPendingCount(response.data.pendingCount); // Adjust based on the API response
+        console.log("Full API response: ", response);
+        setPendingCount(response.data); // Adjust based on the API response
+        console.log("pending count checking: ", response.data);
       } catch (err) {
         console.error("Error fetching pending moderation count", err);
       }
     };
 
     fetchPendingCount();
+
+    // Poll every 5 seconds
+    const intervalId = setInterval(fetchPendingCount, 3000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
@@ -45,8 +53,8 @@ const PopulatedNavBar = () => {
         <NavDropdown>
           <NavItem route="/moderation">
             Moderation
-            {/* Notification badge displayed after the text */}
-            {pendingCount > 0 && <NotificationBadge count={pendingCount} />}
+            {/* Display the red dot and count next to Moderation */}
+            <NotificationBadge count={pendingCount} />
             </NavItem>
           <NavItem route="/analysis">Analysis</NavItem>
           <NavItem route="/admin">Admin Dashboard</NavItem>
