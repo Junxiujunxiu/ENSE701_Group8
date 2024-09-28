@@ -1,16 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@450&display=swap');
+
 .navbar {
   display: flex;
   position: relative;
   top: 0;
   flex-direction: row;
   width: 100%;
-  background-color: darkblue;
+  background-color: rgb(39, 39, 53);
   align-items: center;
   color: aliceblue;
   font-size: 1.5em;
-  font-weight: bold;
+  font-weight: lighter;
   transition: top 0.5s;
   height: fit-content;
+  font-family: 'Monserrat', sans-serif;
   }
   .hide {
   top: -3em;
@@ -37,7 +40,7 @@
     visibility: hidden;
     display: flex;
     flex-direction: column;
-    background-color: darkblue;
+    background-color: rgb(47, 47, 49);
     position: absolute;
     top: 100%;
     right: 0;

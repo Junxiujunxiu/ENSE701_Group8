@@ -28,11 +28,13 @@
     //background image for the index page
     .background-image {
       width: 100%;
-      height: auto; /* Maintains the aspect ratio */
-      display: block; /* Removes any extra space around the image */
-      max-width: 100vw; /* Prevents it from going beyond the viewport width */
-      margin-top: 20px; /* Optional: space below the heading */
+      height: 100vh; /* Makes it cover the full viewport height */
+      object-fit: cover; /* Ensures the image scales nicely without distorting */
+      display: block;
+      margin: 0; /* Removes any margin */
+      padding: 0; /* Removes padding */
     }
+    
 
     .front-container {
       position: absolute;
