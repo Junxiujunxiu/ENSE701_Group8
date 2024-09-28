@@ -39,8 +39,8 @@ const PopulatedNavBar = () => {
     fetchModeratedCount();
 
     // Poll every 3 seconds
-    const pendingIntervalId = setInterval(fetchPendingCount, 1000);
-    const moderatedIntervalId = setInterval(fetchModeratedCount, 1000);
+    const pendingIntervalId = setInterval(fetchPendingCount, 100000);
+    const moderatedIntervalId = setInterval(fetchModeratedCount, 100000);
 
     // Cleanup interval on component unmount
     return () => {

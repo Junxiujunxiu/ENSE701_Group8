@@ -2,10 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { Article } from '../../components/Article';  // Adjust the import path if needed
+import { ArticleDetail } from '@/components/articleDetails/articleDetails';
 
 const ModerationPage = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null); // State for selected article
+  const [detailLoading, setDetailLoading] = useState(false); // State for loading the article details
 
   useEffect(() => {
     // Fetch pending articles from the backend
@@ -40,6 +43,32 @@ const ModerationPage = () => {
       .catch((err) => console.error('Error updating moderation status:', err));
   };
 
+  const handleCheck = (id: string) => {
+    setDetailLoading(true); // Start loading
+    // Fetch article details from the backend by article ID
+    fetch(`http://localhost:3001/api/articles/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setSelectedArticle({
+          id: data._id,
+          title: data.title,
+          authors: data.authors,
+          source: data.source,
+          pubyear: data.pubyear,
+          doi: data.doi,
+          claim: data.claim,
+          evidence: data.evidence,
+          status: data.status,
+        });
+        console.log("Checking this article detail:", data);
+        setDetailLoading(false); // Stop loading
+      })
+      .catch((err) => {
+        console.error('Error fetching article details:', err);
+        setDetailLoading(false);
+      });
+  };
+
   if (loading) return <div>Loading...</div>;
 
   return (
@@ -54,6 +83,7 @@ const ModerationPage = () => {
               <th>Title</th>
               <th>Authors</th>
               <th>Actions</th>
+              <th>Details</th>
             </tr>
           </thead>
           <tbody>
@@ -75,10 +105,25 @@ const ModerationPage = () => {
                     Reject
                   </button>
                 </td>
+                <td>
+                  <button
+                    className="bg-blue-500 text-white px-2 py-1 rounded"
+                    onClick={() => handleCheck(article.id!)} // Check button logic
+                  >
+                    Check
+                  </button>
+                </td>               
               </tr>
             ))}
           </tbody>
-        </table>
+        </table>       
+      )}
+      {/* Conditionally render ArticleDetail when an article is selected */}
+      {selectedArticle && (
+        <ArticleDetail 
+          article={selectedArticle} 
+          onClose={() => setSelectedArticle(null)}  // Close the window by setting article to null
+        />
       )}
     </div>
   );
