@@ -2,10 +2,11 @@ import { Module, Logger } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ArticleModule } from './api/articles/article.module';  // Already added
+import { ArticleModule } from './api/articles/article.module'; // Already added
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 // Import the new modules
+import { SubmitterModule } from './api/submitter/submitter.module';
 import { ModerationModule } from './api/moderation/moderation.module';
 import { AnalysisModule } from './api/analysis/analysis.module';
 import { SearchModule } from './api/search/search.module';
@@ -72,12 +73,15 @@ import { AdminModule } from './api/admin/admin.module';
      * `MongooseModule.forRootAsync()`:
      * - This sets up the connection to the MongoDB database using the Mongoose library.
      * - `forRootAsync()` allows for asynchronous configuration, which is useful when the configuration (e.g., the DB URI) needs to be loaded dynamically, like from environment variables.
-     * 
+     *
      * `imports: [ConfigModule]`:
      * - Imports the `ConfigModule` to access environment variables (like `DB_URI`) through the `ConfigService`.
      ****************************************/
+
+    SubmitterModule,
+
     MongooseModule.forRootAsync({
-      imports: [ConfigModule],  // Import ConfigModule to access environment variables
+      imports: [ConfigModule], // Import ConfigModule to access environment variables
 
       /****************************************
        * `useFactory: async (configService: ConfigService) => { ... }`:
@@ -85,14 +89,14 @@ import { AdminModule } from './api/admin/admin.module';
        * - The `ConfigService` is injected to retrieve environment variables, such as the `DB_URI`.
        * - `configService.get<string>('DB_URI')`: Retrieves the MongoDB URI from environment variables.
        * - Returns an object containing the connection configuration for Mongoose, specifically the MongoDB URI.
-       * 
+       *
        * `Logger.log()`:
        * - Logs the MongoDB connection URI for debugging purposes.
        ****************************************/
       useFactory: async (configService: ConfigService) => {
-        const dbUri = configService.get<string>('DB_URI');  // Retrieve MongoDB URI from the environment
-        Logger.log(`Connecting to database at ${dbUri}`, 'MongooseModule');  // Log the database URI for transparency
-        return { uri: dbUri };  // Return the MongoDB connection configuration
+        const dbUri = configService.get<string>('DB_URI'); // Retrieve MongoDB URI from the environment
+        Logger.log(`Connecting to database at ${dbUri}`, 'MongooseModule'); // Log the database URI for transparency
+        return { uri: dbUri }; // Return the MongoDB connection configuration
       },
 
       /****************************************
