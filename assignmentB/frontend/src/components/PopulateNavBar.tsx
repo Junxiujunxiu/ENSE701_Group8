@@ -9,6 +9,8 @@ import axios from "axios";
 const PopulatedNavBar = () => {
   const [pendingCount, setPendingCount] = useState(0);
   const [moderatedCount, setModeratedCount] = useState(0);
+  const [moderatedAndRejectedCount, setModeratedAndRejectedCount] = useState(0);
+
 
   useEffect(() => {
     // Fetch the number of pending moderation articles
@@ -20,6 +22,16 @@ const PopulatedNavBar = () => {
         console.log("pending count checking: ", response.data);
       } catch (err) {
         console.error("Error fetching pending moderation count", err);
+      }
+    };
+
+    const fetchModeratedAndRejectedCount  = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/api/submitter/moderated-rejected-count');
+        setModeratedAndRejectedCount(response.data); 
+        console.log("rejected count checking: ", response.data);
+      } catch (err) {
+        console.error("Error fetching rejected article count", err);
       }
     };
 
@@ -37,20 +49,22 @@ const PopulatedNavBar = () => {
     // Initial fetch
     fetchPendingCount();
     fetchModeratedCount();
+    fetchModeratedAndRejectedCount();
 
     // Poll every 3 seconds
     const pendingIntervalId = setInterval(fetchPendingCount, 1000);
     const moderatedIntervalId = setInterval(fetchModeratedCount, 1000);
+    const moderatedAndRejectedId = setInterval(fetchModeratedAndRejectedCount, 3000);
 
     // Cleanup interval on component unmount
     return () => {
       clearInterval(pendingIntervalId);
       clearInterval(moderatedIntervalId);
+      clearInterval(moderatedAndRejectedId);
+
     };
 
   }, []);
-
-  
 
   return (
     <NavBar>
@@ -81,6 +95,11 @@ const PopulatedNavBar = () => {
             Analysis
             {/* Display the red dot and waiting for analysis count next to Analysis */}
             <NotificationBadge count={moderatedCount} />
+            </NavItem>
+            <NavItem route="/submitter">
+            Submitter Dashboard
+            {/* show the count of notifications */}
+            <NotificationBadge count={moderatedAndRejectedCount} />
             </NavItem>
           <NavItem route="/admin">Admin Dashboard</NavItem>
           <NavItem route="/search">Search</NavItem>
