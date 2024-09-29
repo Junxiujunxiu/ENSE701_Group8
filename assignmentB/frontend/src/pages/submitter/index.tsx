@@ -7,8 +7,6 @@ import { Article } from '../../components/Article';
 const SubmitterDashboard = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null); // State for selected article
-  const [detailLoading, setDetailLoading] = useState(false); // State for loading the article details
 
   useEffect(() => {
     // get all the articles from the same submitter from backend

@@ -9,27 +9,23 @@ export class SubmitterService {
     @InjectModel(Article.name) private articleModel: Model<ArticleDocument>,
   ) {}
 
-  // Fetch articles with status 'submitted'
+  //at the moment, we assume that all articles are submitted by the same submitter, hence we show all the submitted, rejected and moderated articles.
+
   async getPendingArticles(): Promise<Article[]> {
-    return this.articleModel.find({ status: 'submitted' }).exec(); // Fetch articles with status 'submitted'
+    return this.articleModel.find({ status: 'submitted' }).exec();
   }
 
-  // Fetch articles with status 'rejected'
   async getRejectedArticles(): Promise<Article[]> {
-    return this.articleModel.find({ status: 'rejected' }).exec(); // Fetch articles with status 'rejected'
+    return this.articleModel.find({ status: 'rejected' }).exec(); //
   }
 
-  // Fetch articles with status 'moderated'
   async getModeratedArticles(): Promise<Article[]> {
     return this.articleModel.find({ status: 'moderated' }).exec();
   }
 
-  // Count documents with status 'rejected' and 'moderated'
   async getModeratedAndRejectedArticleCount(): Promise<number> {
     return await this.articleModel
       .countDocuments({ status: { $in: ['rejected', 'moderated'] } })
       .exec();
   }
 }
-
-//at the moment, we assume that all articles are submitted by the same submitter, hence we show all the submitted, rejected and moderated articles.
