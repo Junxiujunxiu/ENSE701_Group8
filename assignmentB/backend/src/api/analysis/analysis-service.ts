@@ -7,13 +7,22 @@ import { Article, ArticleDocument } from '../articles/article.schema';
 export class AnalysisService {
   constructor(@InjectModel(Article.name) private articleModel: Model<ArticleDocument>) {}
 
+  // Get all articles with status 'moderated'
   async getModeratedArticles(): Promise<Article[]> {
-    return this.articleModel.find({ status: 'moderated' }).exec();  // Fetch articles with status 'moderated'
+    return this.articleModel.find({ status: 'moderated' }).exec();
+  }
+
+  // Analyze the article by updating its claim, evidence, and status to 'analyzed'
+  async analyzeArticle(id: string, analysisData: { analystClaim: string; analystEvidence: string }): Promise<Article> {
+    return this.articleModel.findByIdAndUpdate(
+      id,
+      {
+        analystClaim: analysisData.analystClaim,
+        analystEvidence: analysisData.analystEvidence,
+        status: 'analyzed',
+      },
+      { new: true }
+    ).exec();
   }
   
-
-  // Analyze the article and update its status to 'analyzed'
-  async analyzeArticle(id: string, analysisData: any): Promise<Article> {
-    return this.articleModel.findByIdAndUpdate(id, { ...analysisData, status: 'analyzed' }, { new: true }).exec();
-  }
 }
