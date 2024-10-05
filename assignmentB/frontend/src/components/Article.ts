@@ -9,5 +9,15 @@ export type Article = {
   doi: string;
   claim: string;
   evidence: string;
-  status: 'submitted' | 'moderated' | 'analyzed'; // Add status field with expected values
+  status: 'submitted' | 'moderated' | 'analyzed'; // Add status field 
+   // Add the new fields for analysis
+   sePractice?: string;
+   analystClaim?: string;
+   evidenceResult?: string;
+   researchType?: string;
+   participants?: string;
+   researchEvidenceType?: string;
+   keyFindings?: string;
+   peerReviewed?: boolean;
+   publicationType?: string;
 };

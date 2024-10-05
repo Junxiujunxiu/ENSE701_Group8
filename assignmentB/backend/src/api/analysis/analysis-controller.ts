@@ -1,19 +1,31 @@
 import { Controller, Get, Patch, Param, Body } from '@nestjs/common';
 import { AnalysisService } from './analysis-service';
+import { Article } from '../articles/article.schema';
 
 @Controller('api/analysis')
 export class AnalysisController {
   constructor(private readonly analysisService: AnalysisService) {}
 
-  // Route to fetch all articles ready for analysis
   @Get()
-  async getModeratedArticles() {
+  async getModeratedArticles(): Promise<Article[]> {
     return this.analysisService.getModeratedArticles();
   }
 
-  // Route to analyze an article and update its status
   @Patch(':id')
-  async analyzeArticle(@Param('id') id: string, @Body() analysisData: any) {
+  async analyzeArticle(
+    @Param('id') id: string,
+    @Body() analysisData: {
+      sePractice: string;
+      claim: string;
+      evidenceResult: string;
+      researchType: string;
+      participants: string;
+      researchEvidenceType: string;
+      keyFindings: string;
+      peerReviewed: boolean;
+      publicationType: string;
+    },
+  ): Promise<Article> {
     return this.analysisService.analyzeArticle(id, analysisData);
   }
 }
