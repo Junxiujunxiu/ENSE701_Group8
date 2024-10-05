@@ -10,6 +10,14 @@ export type Article = {
   claim: string;
   evidence: string;
   status: 'submitted' | 'moderated' | 'analyzed'; // Add status field 
-  analystClaim?: string;   // Analyst's claim (optional)
-  analystEvidence?: string; // Analyst's evidence (optional)with expected values
+   // Add the new fields for analysis
+   sePractice?: string;
+   analystClaim?: string;
+   evidenceResult?: string;
+   researchType?: string;
+   participants?: string;
+   researchEvidenceType?: string;
+   keyFindings?: string;
+   peerReviewed?: boolean;
+   publicationType?: string;
 };

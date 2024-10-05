@@ -24,12 +24,7 @@ export type ArticleDocument = HydratedDocument<Article>;
  ****************************************/
 @Schema()
 export class Article {
-  /****************************************
-   * `@Prop({ required: true })`: 
-   * - This decorator defines a property in the Mongoose schema and indicates that this field is required.
-   * - If this field is missing when creating a document, Mongoose will throw an error.
-   ****************************************/
-  @Prop({ required: true })
+  @Prop({ required: true })  // Required fields
   title: string;
 
   @Prop({ required: true })
@@ -50,10 +45,21 @@ export class Article {
   @Prop({ required: true })
   evidence: string;
 
-  //-------------------added for new functinality------------------
-  @Prop({ default: 'submitted' })  // Status can be 'submitted', 'moderated', 'rejected', 'analyzed'
+  @Prop({ default: 'submitted' })  // Optional with default
   status: string;
+
+  // Analysis fields (optional)
+  @Prop() sePractice: string;
+  @Prop() analystClaim: string;
+  @Prop() evidenceResult: string;
+  @Prop() researchType: string;
+  @Prop() participants: string;
+  @Prop() researchEvidenceType: string;
+  @Prop() keyFindings: string;
+  @Prop({ default: false }) peerReviewed: boolean;
+  @Prop() publicationType: string;
 }
+
 
 /****************************************
  * `SchemaFactory`: A utility provided by Mongoose to convert a TypeScript class into a Mongoose schema.

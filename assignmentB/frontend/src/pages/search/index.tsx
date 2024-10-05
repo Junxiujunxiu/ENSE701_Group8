@@ -1,103 +1,102 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { Article } from '../../components/Article';
 
-interface Article {
-  _id: string;
-  title: string;
-  authors: string[];
-  status: string;
-}
-
-const AnalysisPage = () => {
+const SearchPage = () => {
+  const [query, setQuery] = useState('');
   const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [analysisData, setAnalysisData] = useState({ claim: '', evidence: '' });
+  const [loading, setLoading] = useState(false);
+  const [filterBy, setFilterBy] = useState('title'); // Filter is applied directly
 
-  // Fetch articles that are in 'moderated' status and ready for analysis
-  useEffect(() => {
-    fetch('http://localhost:3001/api/analysis')
+  const handleSearch = () => {
+    setLoading(true);
+
+    // Add filter logic here
+    fetch('http://localhost:3001/api/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query: query,
+        filterBy: filterBy // Include the selected filter in the search request
+      })
+    })
       .then(res => res.json())
       .then(data => {
         setArticles(data);
         setLoading(false);
       })
       .catch(err => {
-        console.error('Error fetching analysis articles:', err);
+        console.error('Error searching articles:', err);
         setLoading(false);
       });
-  }, []);
-
-  // Handle the change in the form fields
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setAnalysisData(prevData => ({ ...prevData, [name]: value }));
   };
 
-  // Handle the form submission for analyzing the article
-  const handleAnalyze = (id: string) => {
-    if (!id) {
-      console.error('ID is undefined');
-      return;
-    }
-
-    // Send the analysis data (claim, evidence) to the backend
-    fetch(`http://localhost:3001/api/analysis/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...analysisData, status: 'analyzed' }), // Send claim and evidence to the backend
-    })
-      .then(() => {
-        // Remove the analyzed article from the list
-        setArticles(articles.filter(article => article._id !== id));
-      })
-      .catch(err => console.error('Error analyzing article:', err));
+  const handleClear = () => {
+    setQuery('');
+    setArticles([]);
   };
-
-  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Analysis</h1>
-      {articles.length === 0 ? (
-        <p>No articles awaiting analysis.</p>
-      ) : (
-        articles.map(article => (
-          <div key={article._id} className="mb-4">
-            <h2 className="text-xl">{article.title}</h2>
-            <form onSubmit={(e) => { e.preventDefault(); handleAnalyze(article._id); }}>
-              <div className="mb-2">
-                <label>Claim:</label>
-                <input
-                  type="text"
-                  name="claim"
-                  value={analysisData.claim}
-                  onChange={handleInputChange}
-                  className="border p-2 rounded"
-                  placeholder="Enter claim"
-                />
-              </div>
-              <div className="mb-2">
-                <label>Evidence:</label>
-                <input
-                  type="text"
-                  name="evidence"
-                  value={analysisData.evidence}
-                  onChange={handleInputChange}
-                  className="border p-2 rounded"
-                  placeholder="Enter evidence"
-                />
-              </div>
-              <button
-                type="submit"
-                className="bg-blue-500 text-white px-4 py-2 rounded"
-              >
-                Mark as Analyzed
-              </button>
-            </form>
-          </div>
-        ))
+      <h1 className="text-2xl font-bold mb-4 text-center">Search Articles</h1> {/* Centered Title */}
+      
+      <div className="search-container flex flex-col items-center"> {/* Centering the search container */}
+        <div className="search-bar-wrapper flex justify-center items-center"> {/* Centering the search bar wrapper */}
+          <input
+            type="text"
+            value={query || ''}
+            onChange={(e) => setQuery(e.target.value)}
+            className="search-input mr-2 p-2 border rounded"
+            placeholder="Enter article title to search..."
+          />
+          <button onClick={handleSearch} className="search-button p-2 bg-gray-300 rounded">
+            Search
+          </button>
+          <button onClick={handleClear} className="clear-button p-2 bg-gray-300 rounded ml-2">
+            Clear
+          </button>
+        </div>
+
+        {/* Filter select box */}
+        <div className="mt-4">
+          <label htmlFor="filter-select" className="mr-2">Filter by:</label>
+          <select
+            id="filter-select"
+            value={filterBy}
+            onChange={(e) => setFilterBy(e.target.value)}
+            className="filter-select p-2 border rounded"
+          >
+            <option value="title">Title</option>
+            <option value="author">Author</option>
+            <option value="popularity">Popularity</option>
+            <option value="year">Year</option>
+          </select>
+        </div>
+      </div>
+
+      {loading ? <div>Loading...</div> : (
+        articles.length > 0 ? (
+          <table className="table-auto w-full mt-4">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Authors</th>
+                <th>Year</th>
+              </tr>
+            </thead>
+            <tbody>
+              {articles.map(article => (
+                <tr key={article._id || article.id}>
+                  <td>{article.title}</td>
+                  <td>{article.authors.join(', ')}</td>
+                  <td>{article.pubyear}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : <p>No results found.</p>
       )}
     </div>
   );
 };
 
-export default AnalysisPage;
+export default SearchPage; 
