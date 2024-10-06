@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 
 interface SortableTableProps {
-  headers: { key: string; label: string; render?: (row: any) => JSX.Element }[]; // Use string for key type
+  headers: { key: string; label: string; render?: (row: any) => JSX.Element }[];
   data: any[];
+  className?: string; 
 }
 
-const SortableTable: React.FC<SortableTableProps> = ({ headers, data }) => {
+const SortableTable: React.FC<SortableTableProps> = ({ headers, data, className }) => {
   const [sortKey, setSortKey] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [sortedData, setSortedData] = useState(data);
@@ -24,7 +25,7 @@ const SortableTable: React.FC<SortableTableProps> = ({ headers, data }) => {
   };
 
   return (
-    <table>
+    <table className={className}> {/* Apply the className prop */}
       <thead>
         <tr>
           {headers.map((header) => (

@@ -1,9 +1,9 @@
 import { GetServerSideProps, NextPage } from 'next';
 import { useState } from 'react';
 import axios from 'axios';
-import SortableTable from '../../components/table/SortableTable';  // Adjust the import path if needed
-import { Article } from '../../components/Article';  // Adjust the import path if needed
-
+import SortableTable from '../../components/table/SortableTable';  
+import { Article } from '../../components/Article';  
+import styles from '../../styles/Form.module.scss';
 // Define props type for articles
 type ArticlesProps = {
   articles: Article[];
@@ -32,31 +32,46 @@ const headers: { key: string; label: string }[] = [
     setSelectedArticle(article);
   };
 
+  const handleClose = () => {
+    setSelectedArticle(null);
+  };
+
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Articles Index Page</h1>
-      <p>Page containing a table of articles:</p>
-      
-      {/* Table to display articles */}
-      <SortableTable
-        headers={headers}
-        data={articles.map((article) => ({
-          ...article,
-          view: (
-            <button
-              className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
-              onClick={() => handleViewClick(article)}
-            >
-              View
-            </button>
-          ),
-        }))}
-      />
+    <h1 className="text-2xl font-bold mb-4">Articles Index Page</h1>
+    <p>Page containing a table of articles:</p>
 
+    {/* Table to display articles */}
+    <table className={styles.table}>
+      <thead>
+        <tr>
+          {headers.map((header) => (
+            <th key={header.key}>{header.label}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {articles.map((article) => (
+          <tr key={article.id}>
+            <td>{article.title}</td>
+            <td>{article.authors.join(', ')}</td>
+            <td>{article.source}</td>
+            <td>{article.pubyear}</td>
+            <td>{article.doi}</td>
+            <td>{article.status}</td>
+            <td>
+              <button onClick={() => handleViewClick(article)}>
+                View
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
       {/* Modal or section to display selected article details */}
       {selectedArticle && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-2xl">
+         <div className={styles.modalOverlay} onClick={handleClose}>
+    <div className={styles.modalContent}>
             <h2 className="text-2xl font-bold mb-4">Article Details</h2>
             <p><strong>Title:</strong> {selectedArticle.title}</p>
             <p><strong>Authors:</strong> {selectedArticle.authors.join(', ')}</p>
@@ -78,10 +93,7 @@ const headers: { key: string; label: string }[] = [
             
             <button
               className="bg-red-500 text-white px-4 py-2 mt-4 rounded hover:bg-red-600"
-              onClick={() => setSelectedArticle(null)}
-            >
-              Close
-            </button>
+              onClick={handleClose}>Close</button>
           </div>
         </div>
       )}

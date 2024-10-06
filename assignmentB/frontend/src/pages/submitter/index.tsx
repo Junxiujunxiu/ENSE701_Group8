@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import SortableTable from '../../components/table/SortableTable';
 import { Article } from '../../components/Article';  
-
+import styles from '../../styles/Form.module.scss';
 const SubmitterDashboard = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,7 +39,10 @@ const SubmitterDashboard = () => {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Submitter Dashboard</h1>
-      <SortableTable headers={headers} data={articles} />
+      <p>Page containing a table of articles:</p>
+
+      {/* Table to display articles */}
+      <SortableTable headers={headers} data={articles} className={styles.table} />
     </div>
   );
 };

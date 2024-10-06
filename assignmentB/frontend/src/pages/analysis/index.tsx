@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Article } from '../../components/Article'; // Adjust the import path accordingly
+import { Article } from '../../components/Article'; 
+import styles from '../../styles/Form.module.scss';
 
 const AnalysisPage = () => {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -76,48 +77,56 @@ const AnalysisPage = () => {
           placeholder="SE Practice"
           value={sePractice}
           onChange={(e) => setSePractice(e.target.value)}
+          className={styles.formItem}
         />
         <input
           type="text"
           placeholder="Claim"
           value={claim}
           onChange={(e) => setClaim(e.target.value)}
+          className={styles.formItem}
         />
         <input
           type="text"
           placeholder="Evidence Result"
           value={evidenceResult}
           onChange={(e) => setEvidenceResult(e.target.value)}
+          className={styles.formItem}
         />
         <input
           type="text"
           placeholder="Research Type"
           value={researchType}
           onChange={(e) => setResearchType(e.target.value)}
+          className={styles.formItem}
         />
         <input
           type="text"
           placeholder="Participants"
           value={participants}
           onChange={(e) => setParticipants(e.target.value)}
+          className={styles.formItem}
         />
         <input
           type="text"
           placeholder="Research Evidence Type"
           value={researchEvidenceType}
           onChange={(e) => setResearchEvidenceType(e.target.value)}
+          className={styles.formItem}
         />
         <input
           type="text"
           placeholder="Key Findings"
           value={keyFindings}
           onChange={(e) => setKeyFindings(e.target.value)}
+          className={styles.formItem}
         />
         <label>
           <input
             type="checkbox"
             checked={peerReviewed}
             onChange={() => setPeerReviewed(!peerReviewed)}
+          
           />
           Peer Reviewed
         </label>
@@ -126,6 +135,7 @@ const AnalysisPage = () => {
           placeholder="Publication Type"
           value={publicationType}
           onChange={(e) => setPublicationType(e.target.value)}
+          className={styles.formItem}
         />
       </div>
 
