@@ -32,7 +32,7 @@ const ModerationPage = () => {
         setLoading(false);
       });
   }, []);
-
+  
   const handleModeration = (id: string, status: 'moderated' | 'rejected') => {
     // Update the article's moderation status
     fetch(`http://localhost:3001/api/moderation/${id}`, {
@@ -44,7 +44,44 @@ const ModerationPage = () => {
         setArticles(articles.filter((article) => article.id !== id));
       })
       .catch((err) => console.error('Error updating moderation status:', err));
-  };
+  }; 
+
+  /* const handleModeration = async (id: string, status: 'moderated' | 'rejected') => {
+    try {
+      const selectedArticle = articles.find((article) => article.id === id);
+  
+      if (!selectedArticle) {
+        throw new Error('Article not found');
+      }
+  
+      // Include the article details in the moderation request
+      const moderationPayload = {
+        status,
+        sePractice: selectedArticle.sePractice,  // Include extra fields
+        researchType: selectedArticle.researchType,
+        peerReviewed: selectedArticle.peerReviewed,
+        publicationType: selectedArticle.publicationType,
+      };
+  
+      await fetch(`http://localhost:3001/api/moderation/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(moderationPayload),
+      });
+  
+      // Remove the article from the moderation list after approval/rejection
+      setArticles(articles.filter((article) => article.id !== id));
+  
+      // Navigate to the analysis page if the article is approved
+      //if (status === 'moderated') {
+      //  window.location.href = `/analysis/${id}`;  // Redirect to the analysis page with the article ID
+      //}
+  
+    } catch (err) {
+      console.error('Error updating moderation status:', err);
+    }
+  }; */
+  
 
 
 
@@ -64,6 +101,11 @@ const ModerationPage = () => {
           claim: data.claim,
           evidence: data.evidence,
           status: data.status,
+          //add more details here when fetching the article details
+          sePractice: data.sePractice,
+          researchType: data.researchType,
+          peerReviewed: data.peerReviewed,
+          publicationType: data.publicationType,
         });
         console.log("Checking this article detail:", data);
         setDetailLoading(false); // Stop loading
@@ -71,6 +113,30 @@ const ModerationPage = () => {
       .catch((err) => {
         console.error('Error fetching article details:', err);
         setDetailLoading(false);
+      });
+  };
+
+  const handleUpdate = (updatedArticle: Article) => {
+    // Extract the relevant fields to match the `CreateArticleDto` structure
+    const updatePayload = {
+      sePractice: updatedArticle.sePractice,
+      researchType: updatedArticle.researchType,
+      peerReviewed: updatedArticle.peerReviewed,
+      publicationType: updatedArticle.publicationType,
+    };
+  
+    axios
+      .put(`http://localhost:3001/api/articles/${updatedArticle.id}`, updatePayload)
+      .then((response) => {
+        if (response.status === 200) {
+          setSelectedArticle(null); // Close the detail window after a successful update
+          console.log('Article updated successfully:', response.data);
+        } else {
+          console.error('Failed to update article. Status:', response.status);
+        }
+      })
+      .catch((err) => {
+        console.error('Error updating article:', err);
       });
   };
 
@@ -171,6 +237,7 @@ const ModerationPage = () => {
         <ArticleDetail 
           article={selectedArticle} 
           onClose={() => setSelectedArticle(null)}  // Close the window by setting article to null
+          onUpdate={handleUpdate}  // Pass handleUpdate function 
         />
       )}
 

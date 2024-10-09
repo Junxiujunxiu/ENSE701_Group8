@@ -35,16 +35,24 @@ const AnalysisPage = () => {
       return;
     }
 
+    // Gather existing article information (for simplicity, assuming you can access the current article's details)
+    const currentArticle = articles.find(article => article._id === id || article.id === id);
+
+    if (!currentArticle) {
+      console.error('Article not found');
+      return;
+    }
+
     const analysisData = {
-      sePractice,
+      sePractice: sePractice || currentArticle.sePractice, // Use existing value if not set
       claim,
       evidenceResult,
-      researchType,
+      researchType: researchType || currentArticle.researchType,  // Use existing value if not set
       participants,
       researchEvidenceType,
       keyFindings,
-      peerReviewed,
-      publicationType,
+      peerReviewed: peerReviewed !== undefined ? peerReviewed : currentArticle.peerReviewed,  // Use existing value if not set
+      publicationType: publicationType || currentArticle.publicationType,  // Use existing value if not set
       status: 'analyzed',
     };
 

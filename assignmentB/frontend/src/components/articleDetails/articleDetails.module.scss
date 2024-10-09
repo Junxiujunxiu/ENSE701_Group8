@@ -68,4 +68,31 @@
   .statusText {
     font-weight: bold;  // Make status text bold
   }
+
+  .inputArea {
+    min-height: 50px;           // Set a minimum height for better usability
+    word-wrap: break-word;      // Enable word wrapping
+    overflow: auto;             // Add scroll if content overflows
+    padding: 8px;               // Optional: add some padding for better appearance
+    border: 1px solid #ccc;     // Optional: add a border
+    border-radius: 4px;         // Optional: add rounded corners
+    font-size: 14px;            // Optional: set font size
+    line-height: normal;        
+    width: 100%;                // Full width of the container
+    resize: vertical;      
+}
+
+.labelContainer {
+  width: 120px; 
+                 // Set the width of the label container
+  display: inline-block;        // Ensure it aligns nicely with the input fields
+  vertical-align: top;          // Align the top of the label container with the input fields
+}
+
+.inputContainer {
+  display: flex;                // Use flexbox to arrange label and input side by side
+  align-items: center;          // Center vertically
+  margin-bottom: 10px;          // Add space between input sections
+}
+  
   
