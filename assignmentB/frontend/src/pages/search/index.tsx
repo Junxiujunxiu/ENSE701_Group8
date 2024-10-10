@@ -1,22 +1,39 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Article } from '../../components/Article';
+import Cookies from 'js-cookie';
 
 const SearchPage = () => {
   const [query, setQuery] = useState('');
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(false);
-  const [filterBy, setFilterBy] = useState('title'); // Filter is applied directly
+  const [filterBy, setFilterBy] = useState('title'); // Default filter
+  const [previousSearches, setPreviousSearches] = useState<string[]>([]);
+
+  useEffect(() => {
+    // Load previous searches from cookies
+    const savedSearches = JSON.parse(Cookies.get('searchHistory') || '[]');
+    setPreviousSearches(savedSearches);
+  }, []);
 
   const handleSearch = () => {
+    if (!query) return; // Prevent empty searches
+
     setLoading(true);
 
-    // Add filter logic here
+    // Update previous searches
+    const updatedSearches = JSON.parse(Cookies.get('searchHistory') || '[]');
+    if (!updatedSearches.includes(query)) {
+      updatedSearches.push(query);
+      Cookies.set('searchHistory', JSON.stringify(updatedSearches), { expires: 7 });
+      setPreviousSearches(updatedSearches);
+    }
+
     fetch('http://localhost:3001/api/search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         query: query,
-        filterBy: filterBy // Include the selected filter in the search request
+        filterBy: filterBy // Include filter in the search request
       })
     })
       .then(res => res.json())
@@ -35,17 +52,27 @@ const SearchPage = () => {
     setArticles([]);
   };
 
+  const handleClearSearchHistory = () => {
+    setPreviousSearches([]);
+    Cookies.remove('searchHistory'); // Clear cookies
+  };
+
+  const handlePreviousSearchClick = (searchTerm: string) => {
+    setQuery(searchTerm);
+    handleSearch();
+  };
+
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4 text-center">Search Articles</h1> {/* Centered Title */}
+      <h1 className="text-2xl font-bold mb-4 text-center">Search Articles</h1>
       
-      <div className="search-container flex flex-col items-center"> {/* Centering the search container */}
-        <div className="search-bar-wrapper flex justify-center items-center"> {/* Centering the search bar wrapper */}
+      <div className="search-container flex flex-col items-center mb-4">
+        <div className="search-bar-wrapper flex justify-center items-center mb-4">
           <input
             type="text"
-            value={query || ''}
+            value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="search-input mr-2 p-2 border rounded"
+            className="search-input p-2 border rounded mr-2"
             placeholder="Enter article title to search..."
           />
           <button onClick={handleSearch} className="search-button p-2 bg-gray-300 rounded">
@@ -56,8 +83,7 @@ const SearchPage = () => {
           </button>
         </div>
 
-        {/* Filter select box */}
-        <div className="mt-4">
+        <div className="filter-container">
           <label htmlFor="filter-select" className="mr-2">Filter by:</label>
           <select
             id="filter-select"
@@ -73,6 +99,25 @@ const SearchPage = () => {
         </div>
       </div>
 
+      {previousSearches.length > 0 && (
+  <div className="previous-searches mt-4">
+    <h2 className="text-lg font-bold">Previous Searches:</h2>
+    <ul className="list-disc pl-5">
+      {previousSearches.slice().reverse().map((search, index) => (
+        <li
+          key={index}
+          onClick={() => handlePreviousSearchClick(search)}
+          className="cursor-pointer text-blue-500 hover:underline"
+        >
+          {search}
+        </li>
+      ))}
+    </ul>
+    <button onClick={handleClearSearchHistory} className="clear-history-button p-2 bg-red-500 text-white rounded mt-2">
+      Clear History
+    </button>
+  </div>
+)}
       {loading ? <div>Loading...</div> : (
         articles.length > 0 ? (
           <table className="table-auto w-full mt-4">
@@ -99,4 +144,4 @@ const SearchPage = () => {
   );
 };
 
-export default SearchPage; 
+export default SearchPage;
