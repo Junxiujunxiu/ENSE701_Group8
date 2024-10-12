@@ -1,3 +1,6 @@
+import React from 'react';
+
+
 const NotificationBadge = ({ count }: { count: number }) => {
     if (count === undefined || count === 0) {
         return (

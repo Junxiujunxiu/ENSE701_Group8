@@ -1,3 +1,4 @@
+import React from 'react';
 import { FormEvent, useState } from 'react';
 import formStyles from '../../styles/Form.module.scss';
 import axios from 'axios';
@@ -26,6 +27,7 @@ const NewDiscussion = () => {
     try {
       await axios.post('http://localhost:3001/api/articles', newArticle);
       // Handle successful submission (e.g., redirect to articles page or show success message)
+      alert('Submitted successfully.');
     } catch (error) {
       console.error('Error creating article:', error);
       // Handle error (e.g., show error message)

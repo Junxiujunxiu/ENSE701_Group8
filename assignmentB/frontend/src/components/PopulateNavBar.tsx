@@ -5,6 +5,8 @@ import NavItem from "./nav/Navitem"; // Fix spelling: NavItem should have an upp
 import NotificationBadge from "../components/notification/NotificationBadge"; // Import the new notification component
 import { useEffect, useState } from "react";
 import axios from "axios";
+import React from 'react';
+
 
 const PopulatedNavBar = () => {
   const [pendingCount, setPendingCount] = useState(0);

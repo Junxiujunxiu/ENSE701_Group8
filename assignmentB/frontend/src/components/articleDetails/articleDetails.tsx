@@ -24,6 +24,9 @@ export const ArticleDetail = ({ article, onClose, onUpdate }: ArticleDetailProps
       publicationType,
     };
     onUpdate(updatedArticle);
+
+    // Show success alert
+    alert('Article updated successfully!');   //add this one for TTD checking.
   };
 
   return (
