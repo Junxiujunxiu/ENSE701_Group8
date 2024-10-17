@@ -1,4 +1,4 @@
-import { IsString, IsArray, IsNumber } from 'class-validator';
+import { IsString, IsArray, IsNumber, IsOptional, IsBoolean } from 'class-validator';
 
 /****************************************
  * DTO (Data Transfer Object): 
@@ -82,4 +82,40 @@ export class CreateArticleDto {
    ****************************************/
   @IsString()
   readonly evidence: string;
+  //adding something new here:
+  
+
+
+
+  /****************************************
+   * `sePractice`: Optional field
+   * - Validates that `sePractice` is a string.
+   ****************************************/
+  @IsString()
+  @IsOptional()
+  readonly sePractice?: string;
+
+  /****************************************
+   * `researchType`: Optional field
+   * - Validates that `researchType` is a string.
+   ****************************************/
+  @IsString()
+  @IsOptional()
+  readonly researchType?: string;
+
+  /****************************************
+   * `peerReviewed`: Optional field
+   * - Validates that `peerReviewed` is a boolean.
+   ****************************************/
+  @IsBoolean()
+  @IsOptional()
+  readonly peerReviewed?: boolean;
+
+  /****************************************
+   * `publicationType`: Optional field
+   * - Validates that `publicationType` is a string.
+   ****************************************/
+  @IsString()
+  @IsOptional()
+  readonly publicationType?: string;
 }
