@@ -31,7 +31,7 @@ export class ModerationController {
     then, call findSimilarArticles(newArticle) from service.ts to return a list of articles that similar to this article */
   @Post('compare')
   async compareWithDatabase(@Body() newArticle: Partial<Article>) {
-    console.log('Received article for comparison', newArticle);
+    // console.log('Received article for comparison', newArticle);
     return this.moderationService.findSimilarArticles(newArticle);
   }
 }

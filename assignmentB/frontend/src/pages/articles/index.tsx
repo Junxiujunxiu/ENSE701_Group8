@@ -1,8 +1,9 @@
 import { GetServerSideProps, NextPage } from 'next';
 import { useState } from 'react';
 import axios from 'axios';
-import SortableTable from '../../components/table/SortableTable';  // Adjust the import path if needed
-import { Article } from '../../components/Article';  // Adjust the import path if needed
+import RatingStars from '@/components/rating/RatingStars';
+import SortableTable from '../../components/table/SortableTable';  
+import { Article } from '../../components/Article';  
 
 // Define props type for articles
 type ArticlesProps = {
@@ -24,6 +25,7 @@ const headers: { key: string; label: string }[] = [
   { key: 'doi', label: 'DOI' },
   { key: 'status', label: 'Status' },
   { key: 'view', label: 'Actions' },  // Allow 'view' as a custom key
+  { key: 'rating', label: 'Rating' }, // for rating section
 ];
 
 
@@ -35,7 +37,7 @@ const headers: { key: string; label: string }[] = [
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Articles Index Page</h1>
-      <p>Page containing a table of articles:</p>
+      {/* <p>Page containing a table of articles:</p> */}
       
       {/* Table to display articles */}
       <SortableTable
@@ -50,6 +52,16 @@ const headers: { key: string; label: string }[] = [
               View
             </button>
           ),
+          rating: (
+            <RatingStars
+              articleId={article.id!}
+              currentRating={
+                article.ratingCount && article.totalRating
+        ? article.totalRating / article.ratingCount
+        : 0
+              }
+            />
+          ), 
         }))}
       />
 
@@ -114,6 +126,8 @@ export const getServerSideProps: GetServerSideProps<ArticlesProps> = async () =>
       keyFindings: article.keyFindings || '',
       peerReviewed: article.peerReviewed ? 'Yes' : 'No',
       publicationType: article.publicationType || '',
+      totalRating: article.totalRating || 0,  
+      ratingCount: article.ratingCount || 0,  
     }));
 
     return {

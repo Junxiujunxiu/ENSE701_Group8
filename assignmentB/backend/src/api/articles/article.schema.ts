@@ -16,7 +16,7 @@ import { HydratedDocument } from 'mongoose';
  * - This type definition (`ArticleDocument`) ensures that any variable of this type will have all the
  *   properties and methods of a hydrated Article document.
  ****************************************/
-export type ArticleDocument = HydratedDocument<Article>; 
+export type ArticleDocument = HydratedDocument<Article>;
 
 /****************************************
  * `@Schema()`: Decorator that marks the class as a schema definition for Mongoose.
@@ -24,7 +24,7 @@ export type ArticleDocument = HydratedDocument<Article>;
  ****************************************/
 @Schema()
 export class Article {
-  @Prop({ required: true })  // Required fields
+  @Prop({ required: true }) // Required fields
   title: string;
 
   @Prop({ required: true })
@@ -45,7 +45,7 @@ export class Article {
   @Prop({ required: true })
   evidence: string;
 
-  @Prop({ default: 'submitted' })  // Optional with default
+  @Prop({ default: 'submitted' }) // Optional with default
   status: string;
 
   // Analysis fields (optional)
@@ -58,17 +58,22 @@ export class Article {
   @Prop() keyFindings: string;
   @Prop({ default: false }) peerReviewed: boolean;
   @Prop() publicationType: string;
-}
 
+  // for rating feature
+  @Prop({ default: 0 })
+  totalRating: number;
+  @Prop({ default: 0 })
+  ratingCount: number;
+}
 
 /****************************************
  * `SchemaFactory`: A utility provided by Mongoose to convert a TypeScript class into a Mongoose schema.
  * - It automates the creation of a schema based on the decorators and types defined in the class.
  *
- * `createForClass(Article)`: 
+ * `createForClass(Article)`:
  * - This method takes the `Article` class as an argument and generates a Mongoose schema from it.
  *
- * `ArticleSchema`: 
+ * `ArticleSchema`:
  * - This constant holds the Mongoose schema that was generated from the `Article` class.
  *
  * You can later use `ArticleSchema` to create a Mongoose model, which allows you to perform operations
