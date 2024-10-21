@@ -12,10 +12,12 @@ const ModerationPage = () => {
   const [detailLoading, setDetailLoading] = useState(false); // State for loading the article details
   const [similarArticles, setSimilarArticles] = useState<Article[]>([]); 
   const [comparingArticle, setComparingArticle] = useState<Article | null>(null); 
+
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
   
   useEffect(() => {
     // Fetch pending articles from the backend
-    fetch('http://localhost:3001/api/moderation')
+     fetch(`${apiUrl}/api/moderation`)
       .then((res) => res.json())
       .then((data) => {
         const articlesWithId = data.map((article: any) => ({

@@ -21,29 +21,31 @@ const PopulatedNavBar = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
         const [pendingResponse, moderatedResponse, rejectedResponse] = await Promise.all([
-          axios.get('http://localhost:3001/api/moderation/pending-count'),
-          axios.get('http://localhost:3001/api/analysis'),
-          axios.get('http://localhost:3001/api/submitter/moderated-rejected-count')
+          axios.get(`${apiUrl}/api/moderation/pending-count`),
+          axios.get(`${apiUrl}/api/analysis`),
+          axios.get(`${apiUrl}/api/submitter/moderated-rejected-count`)
         ]);
-
+  
         setPendingCount(pendingResponse.data);
         setModeratedCount(moderatedResponse.data.length); // Assuming it's an array
         setModeratedAndRejectedCount(rejectedResponse.data);
-
+  
       } catch (err) {
         console.error("Error fetching notification data", err);
       }
     };
-
+  
     fetchData();
-
+  
     // Poll every 5 seconds to reduce the load
     const intervalId = setInterval(fetchData, 5000);
-
+  
     // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
   }, []);
+  
 
   const handleLogout = async () => {
     await signOut(auth); // Sign out the user

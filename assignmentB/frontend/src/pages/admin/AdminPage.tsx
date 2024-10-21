@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Article } from '../../components/Article'; // Adjust the import path
 
-
 const AdminPage = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Use the dynamic API URL from environment variables
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
   useEffect(() => {
-    fetch('http://localhost:3001/api/admin')
+    // Fetch articles from the admin API using the dynamic URL
+    fetch(`${apiUrl}/api/admin`)
       .then((res) => {
         if (!res.ok) {
           throw new Error('Failed to fetch articles');
@@ -22,7 +25,7 @@ const AdminPage = () => {
         console.error('Error fetching articles:', err);
         setLoading(false);
       });
-  }, []);
+  }, [apiUrl]);
 
   const handleDelete = (id?: string) => {
     if (!id) {
@@ -31,7 +34,8 @@ const AdminPage = () => {
     }
 
     if (window.confirm('Are you sure you want to delete this article?')) {
-      fetch(`http://localhost:3001/api/admin/${id}`, {
+      // Send a DELETE request using the dynamic API URL
+      fetch(`${apiUrl}/api/admin/${id}`, {
         method: 'DELETE',
       })
         .then(() => {

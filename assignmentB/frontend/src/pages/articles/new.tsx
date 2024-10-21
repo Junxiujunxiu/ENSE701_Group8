@@ -12,6 +12,9 @@ const NewDiscussion = () => {
   const [claim, setClaim] = useState('');
   const [evidence, setEvidence] = useState('');
 
+  // Use the dynamic API URL from environment variables
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
   const submitNewArticle = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const newArticle = {
@@ -25,7 +28,8 @@ const NewDiscussion = () => {
     };
 
     try {
-      await axios.post('http://localhost:3001/api/articles', newArticle);
+      // Use the dynamic API URL for the POST request
+      await axios.post(`${apiUrl}/api/articles`, newArticle);
       // Handle successful submission (e.g., redirect to articles page or show success message)
       alert('Submitted successfully.');
     } catch (error) {

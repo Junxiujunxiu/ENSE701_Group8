@@ -5,6 +5,9 @@ const AnalysisPage = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Use the dynamic API URL from environment variables
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
   // Ensure all form inputs have initial values to avoid uncontrolled component issues
   const [sePractice, setSePractice] = useState(''); // Initialize with an empty string
   const [claim, setClaim] = useState(''); // Initialize with an empty string
@@ -17,7 +20,8 @@ const AnalysisPage = () => {
   const [publicationType, setPublicationType] = useState(''); // Initialize with an empty string
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/analysis')
+    // Fetch the articles for analysis using the dynamic API URL
+    fetch(`${apiUrl}/api/analysis`)
       .then(res => res.json())
       .then(data => {
         setArticles(data);
@@ -27,7 +31,7 @@ const AnalysisPage = () => {
         console.error('Error fetching analysis articles:', err);
         setLoading(false);
       });
-  }, []);
+  }, [apiUrl]);
 
   const handleAnalyze = async (id: string | undefined) => {
     if (!id) {
@@ -57,13 +61,15 @@ const AnalysisPage = () => {
     };
 
     try {
-      await fetch(`http://localhost:3001/api/analysis/${id}`, {
+      // Update the article analysis data using the dynamic API URL
+      await fetch(`${apiUrl}/api/analysis/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(analysisData),
       });
 
-      const response = await fetch('http://localhost:3001/api/analysis');
+      // Fetch updated articles after successful analysis
+      const response = await fetch(`${apiUrl}/api/analysis`);
       const updatedArticles = await response.json();
       setArticles(updatedArticles); // Update the list
     } catch (error) {

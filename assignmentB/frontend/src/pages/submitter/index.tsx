@@ -1,16 +1,19 @@
-
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import SortableTable from '../../components/table/SortableTable';
 import { Article } from '../../components/Article';  
 import styles from '../../styles/Form.module.scss';
+
 const SubmitterDashboard = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Use the dynamic API URL from environment variables
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
   useEffect(() => {
-    // get all the articles from the same submitter from backend
-    axios.get('http://localhost:3001/api/submitter/all')
+    // Fetch all the articles from the same submitter from backend
+    axios.get(`${apiUrl}/api/submitter/all`)
       .then((response) => {
         console.log('Fetched articles', response.data);
         setArticles(response.data);
@@ -20,7 +23,7 @@ const SubmitterDashboard = () => {
         console.error('Oops! There is an error when fetching articles:', error);
         setLoading(false);
       });
-  }, []);
+  }, [apiUrl]);
 
   const headers = [
     { key: 'title', label: 'Title' },
@@ -30,8 +33,7 @@ const SubmitterDashboard = () => {
     { key: 'doi', label: 'DOI' },
     { key: 'claim', label: 'Claim' },
     { key: 'evidence', label: 'Evidence' },
-    // to show the submission status after moderator approved or rejectd
-    { key: 'status', label: 'Submission Status' }, 
+    { key: 'status', label: 'Submission Status' }, // Show the submission status after moderator approves/rejects
   ];
 
   if (loading) return <div>Loading...</div>; 
