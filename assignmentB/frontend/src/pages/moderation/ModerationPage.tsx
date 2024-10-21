@@ -1,5 +1,3 @@
-// src/pages/moderation/index.tsx
-
 import { useEffect, useState } from 'react';
 import { Article } from '../../components/Article';  // Adjust the import path if needed
 import { ArticleDetail } from '@/components/articleDetails/articleDetails';
@@ -8,20 +6,20 @@ import axios from 'axios';
 const ModerationPage = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null); // State for selected article
-  const [detailLoading, setDetailLoading] = useState(false); // State for loading the article details
-  const [similarArticles, setSimilarArticles] = useState<Article[]>([]); 
-  const [comparingArticle, setComparingArticle] = useState<Article | null>(null); 
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [similarArticles, setSimilarArticles] = useState<Article[]>([]);
+  const [comparingArticle, setComparingArticle] = useState<Article | null>(null);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
   
   useEffect(() => {
     // Fetch pending articles from the backend
-     fetch(`${apiUrl}/api/moderation`)
+    fetch(`${apiUrl}/api/moderation`)
       .then((res) => res.json())
       .then((data) => {
         const articlesWithId = data.map((article: any) => ({
-          id: article._id,  // Map _id to id for consistency
+          id: article._id,
           title: article.title,
           authors: article.authors,
           status: article.status,
@@ -33,11 +31,10 @@ const ModerationPage = () => {
         console.error('Error fetching moderation articles:', err);
         setLoading(false);
       });
-  }, []);
+  }, [apiUrl]);  // Add apiUrl to the dependency array
   
   const handleModeration = (id: string, status: 'moderated' | 'rejected') => {
-    // Update the article's moderation status
-    fetch(`http://localhost:3001/api/moderation/${id}`, {
+    fetch(`${apiUrl}/api/moderation/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status }),
@@ -46,51 +43,11 @@ const ModerationPage = () => {
         setArticles(articles.filter((article) => article.id !== id));
       })
       .catch((err) => console.error('Error updating moderation status:', err));
-  }; 
-
-  /* const handleModeration = async (id: string, status: 'moderated' | 'rejected') => {
-    try {
-      const selectedArticle = articles.find((article) => article.id === id);
-  
-      if (!selectedArticle) {
-        throw new Error('Article not found');
-      }
-  
-      // Include the article details in the moderation request
-      const moderationPayload = {
-        status,
-        sePractice: selectedArticle.sePractice,  // Include extra fields
-        researchType: selectedArticle.researchType,
-        peerReviewed: selectedArticle.peerReviewed,
-        publicationType: selectedArticle.publicationType,
-      };
-  
-      await fetch(`http://localhost:3001/api/moderation/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(moderationPayload),
-      });
-  
-      // Remove the article from the moderation list after approval/rejection
-      setArticles(articles.filter((article) => article.id !== id));
-  
-      // Navigate to the analysis page if the article is approved
-      //if (status === 'moderated') {
-      //  window.location.href = `/analysis/${id}`;  // Redirect to the analysis page with the article ID
-      //}
-  
-    } catch (err) {
-      console.error('Error updating moderation status:', err);
-    }
-  }; */
-  
-
-
+  };
 
   const handleCheck = (id: string) => {
-    setDetailLoading(true); // Start loading
-    // Fetch article details from the backend by article ID
-    fetch(`http://localhost:3001/api/articles/${id}`)
+    setDetailLoading(true);
+    fetch(`${apiUrl}/api/articles/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setSelectedArticle({
@@ -103,14 +60,12 @@ const ModerationPage = () => {
           claim: data.claim,
           evidence: data.evidence,
           status: data.status,
-          //add more details here when fetching the article details
           sePractice: data.sePractice,
           researchType: data.researchType,
           peerReviewed: data.peerReviewed,
           publicationType: data.publicationType,
         });
-        console.log("Checking this article detail:", data);
-        setDetailLoading(false); // Stop loading
+        setDetailLoading(false);
       })
       .catch((err) => {
         console.error('Error fetching article details:', err);
@@ -119,7 +74,6 @@ const ModerationPage = () => {
   };
 
   const handleUpdate = (updatedArticle: Article) => {
-    // Extract the relevant fields to match the `CreateArticleDto` structure
     const updatePayload = {
       sePractice: updatedArticle.sePractice,
       researchType: updatedArticle.researchType,
@@ -128,10 +82,10 @@ const ModerationPage = () => {
     };
   
     axios
-      .put(`http://localhost:3001/api/articles/${updatedArticle.id}`, updatePayload)
+      .put(`${apiUrl}/api/articles/${updatedArticle.id}`, updatePayload)
       .then((response) => {
         if (response.status === 200) {
-          setSelectedArticle(null); // Close the detail window after a successful update
+          setSelectedArticle(null);
           console.log('Article updated successfully:', response.data);
         } else {
           console.error('Failed to update article. Status:', response.status);
@@ -142,16 +96,12 @@ const ModerationPage = () => {
       });
   };
 
-  // to precess comparison article function
   const handleCompare = async (article: Article) => {
     setDetailLoading(true);
-  
-    // get article info through article.id
     try {
-      const response = await fetch(`http://localhost:3001/api/articles/${article.id}`);
+      const response = await fetch(`${apiUrl}/api/articles/${article.id}`);
       const data = await response.json();
   
-      // save the article info into articleForComparison
       const articleForComparison = {
         id: article.id,
         title: data.title,
@@ -162,10 +112,7 @@ const ModerationPage = () => {
         evidence: data.evidence,
       };
   
-      // post to compare article
-      const comparisonResponse = await axios.post('http://localhost:3001/api/moderation/compare', articleForComparison);
-      console.log('Comparison response:', comparisonResponse.data);
-
+      const comparisonResponse = await axios.post(`${apiUrl}/api/moderation/compare`, articleForComparison);
       setSimilarArticles(comparisonResponse.data);
       setComparingArticle(article);
     } catch (error) {
@@ -174,7 +121,6 @@ const ModerationPage = () => {
       setDetailLoading(false);
     }
   };
-  
 
   if (loading) return <div>Loading...</div>;
 
@@ -216,33 +162,31 @@ const ModerationPage = () => {
                 <td>
                   <button
                     className="bg-blue-500 text-white px-2 py-1 rounded"
-                    onClick={() => handleCheck(article.id!)} // Check button logic
+                    onClick={() => handleCheck(article.id!)}
                   >
                     Check
                   </button>
-                </td>   
+                </td>
                 <td>
                   <button
                     className="bg-yellow-500 text-white px-2 py-1 rounded"
-                    onClick={() => handleCompare(article)} 
+                    onClick={() => handleCompare(article)}
                   >
                     Compare
                   </button>
-                </td>            
+                </td>
               </tr>
             ))}
           </tbody>
-        </table>       
+        </table>
       )}
-      {/* Conditionally render ArticleDetail when an article is selected */}
       {selectedArticle && (
-        <ArticleDetail 
-          article={selectedArticle} 
-          onClose={() => setSelectedArticle(null)}  // Close the window by setting article to null
-          onUpdate={handleUpdate}  // Pass handleUpdate function 
+        <ArticleDetail
+          article={selectedArticle}
+          onClose={() => setSelectedArticle(null)}
+          onUpdate={handleUpdate}
         />
       )}
-
       {comparingArticle && (
         <div>
           <h2 className="text-xl font-bold mt-6">Comparison Results for: {comparingArticle.title}</h2>

@@ -9,7 +9,7 @@ export class AdminController {
   // Route to fetch all articles for admin
   @Get()
   async getAllArticles(): Promise<Article[]> {
-    return this.adminService.findAll();  // You need to define this service method
+    return this.adminService.findAll();
   }
 
   // Route to update an article
