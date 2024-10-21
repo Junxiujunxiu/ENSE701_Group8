@@ -9,7 +9,7 @@ export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
   @Get()
-  async getAllArticles(): Promise<Article[]> {
+  async getAllArticles() {
     this.logger.log('Fetching all articles');
     return this.adminService.findAll();
   }
