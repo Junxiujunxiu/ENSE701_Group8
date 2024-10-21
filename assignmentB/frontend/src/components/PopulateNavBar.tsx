@@ -21,7 +21,7 @@ const PopulatedNavBar = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        const apiUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:3001';
         const [pendingResponse, moderatedResponse, rejectedResponse] = await Promise.all([
           axios.get(`${apiUrl}/api/moderation/pending-count`),
           axios.get(`${apiUrl}/api/analysis`),

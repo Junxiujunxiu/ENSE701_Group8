@@ -10,7 +10,7 @@ const SearchPage = () => {
   const [previousSearches, setPreviousSearches] = useState<string[]>([]);
   
   // Use the dynamic API URL from environment variables
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  const apiUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:3001';
 
   useEffect(() => {
     // Load previous searches from cookies

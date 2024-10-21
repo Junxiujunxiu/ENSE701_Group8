@@ -104,7 +104,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles }) => {
 export const getServerSideProps: GetServerSideProps<ArticlesProps> = async () => {
   try {
     // Use the dynamic API URL from the environment variable
-    const apiUrl = process.env.API_URL || 'http://localhost:3001';
+    const apiUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:3001';
 
     const response = await axios.get(`${apiUrl}/api/articles`);  // API call to fetch articles
 

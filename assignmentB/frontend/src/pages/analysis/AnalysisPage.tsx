@@ -6,7 +6,7 @@ const AnalysisPage = () => {
   const [loading, setLoading] = useState(true);
 
   // Use the dynamic API URL from environment variables
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  const apiUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:3001';
 
   // Ensure all form inputs have initial values to avoid uncontrolled component issues
   const [sePractice, setSePractice] = useState(''); // Initialize with an empty string

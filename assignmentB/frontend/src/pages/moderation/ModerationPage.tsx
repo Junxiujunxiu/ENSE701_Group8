@@ -11,7 +11,7 @@ const ModerationPage = () => {
   const [similarArticles, setSimilarArticles] = useState<Article[]>([]);
   const [comparingArticle, setComparingArticle] = useState<Article | null>(null);
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  const apiUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:3001';
   
   useEffect(() => {
     // Fetch pending articles from the backend

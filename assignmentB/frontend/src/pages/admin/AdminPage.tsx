@@ -6,7 +6,7 @@ const AdminPage = () => {
   const [loading, setLoading] = useState(true);
 
   // Use the dynamic API URL from environment variables
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  const apiUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:3001';
 
   useEffect(() => {
     // Fetch articles from the admin API using the dynamic URL
