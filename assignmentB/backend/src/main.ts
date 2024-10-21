@@ -7,7 +7,6 @@ import * as dotenv from 'dotenv';
 dotenv.config(); // Load environment variables
 
 async function bootstrap() {
-  // Log to check the loaded MongoDB URI and port
   const dbUri = process.env.DB_URI;
   const port = process.env.PORT || 3001;  // Default to 3001
 
@@ -28,8 +27,11 @@ async function bootstrap() {
     Logger.log('Starting NestJS application...', 'Bootstrap');
     const app = await NestFactory.create(AppModule);
 
-    // Enable CORS for cross-origin requests
-    app.enableCors({ origin: true, credentials: true });
+    // Enable CORS for cross-origin requests, restrict to Vercel domain in production
+    app.enableCors({
+      origin: ['https://ense-701-group8.vercel.app'],  // Allow only Vercel domain
+      credentials: true,
+    });
 
     await app.listen(port, () => Logger.log(`Server running on port ${port}`));
   } catch (err) {
@@ -37,5 +39,4 @@ async function bootstrap() {
   }
 }
 
-// Make sure to call the bootstrap function
-bootstrap();
+bootstrap();  // Call the bootstrap function
