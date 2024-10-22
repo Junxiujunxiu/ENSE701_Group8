@@ -9,6 +9,8 @@ const SearchPage = () => {
   const [filterBy, setFilterBy] = useState('title'); // Default filter
   const [previousSearches, setPreviousSearches] = useState<string[]>([]);
 
+  const apiUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:3001';
+
   useEffect(() => {
     // Load previous searches from cookies
     const savedSearches = JSON.parse(Cookies.get('searchHistory') || '[]');
@@ -17,9 +19,9 @@ const SearchPage = () => {
 
   const handleSearch = () => {
     if (!query) return; // Prevent empty searches
-
+  
     setLoading(true);
-
+  
     // Update previous searches
     const updatedSearches = JSON.parse(Cookies.get('searchHistory') || '[]');
     if (!updatedSearches.includes(query)) {
@@ -27,8 +29,9 @@ const SearchPage = () => {
       Cookies.set('searchHistory', JSON.stringify(updatedSearches), { expires: 7 });
       setPreviousSearches(updatedSearches);
     }
-
-    fetch('http://localhost:3001/api/search', {
+  
+    // Using dynamic apiUrl here
+    fetch(`${apiUrl}/api/search`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -46,6 +49,7 @@ const SearchPage = () => {
         setLoading(false);
       });
   };
+  
 
   const handleClear = () => {
     setQuery('');
